@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework</groupId>
-    <artifactId>gs-rest-service</artifactId>
+    <artifactId>phonebook</artifactId>
     <version>0.1.0</version>
 
     <parent>
@@ -32,14 +32,38 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+  		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			</dependency>
+		<dependency>
+      		<groupId>org.springframework.mobile</groupId>
+      		<artifactId>spring-mobile-device</artifactId>
+    	</dependency>
+    	<dependency>
+      		<groupId>org.apache.commons</groupId>
+      		<artifactId>commons-lang3</artifactId>
+      		<version>${apache-commons.version}</version>
+    	</dependency>
+        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+      		<groupId>io.jsonwebtoken</groupId>
+      		<artifactId>jjwt</artifactId>
+      		<version>${jjwt.version}</version>
+    	</dependency>
     </dependencies>
 
     <properties>
         <java.version>1.8</java.version>
+        <apache-commons.version>3.0</apache-commons.version>
+        <jjwt.version>0.4</jjwt.version>
     </properties>
 
 
@@ -57,6 +81,14 @@
             <id>spring-releases</id>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
+        <repository>
+	        <id>spring-milestones</id>
+	        <name>Spring Milestones</name>
+	        <url>https://repo.spring.io/libs-milestone</url>
+	        <snapshots>
+	            <enabled>false</enabled>
+	        </snapshots>
+    	</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
