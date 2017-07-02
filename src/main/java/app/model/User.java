@@ -38,7 +38,7 @@ public class User extends DomainBase {
 
   @Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "users_seq")
 	@SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
   public Long getId() {
     return this.id;
