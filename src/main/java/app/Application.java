@@ -1,20 +1,17 @@
 package app;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-
-import app.model.User;
-import app.repository.CustomerRepository;
-import app.repository.UserRepository;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //https://spring.io/guides/gs/accessing-data-jpa/
 //https://spring.io/guides/gs/rest-service/
+
+import app.model.User;
+import app.repository.UserRepository;
 
 @SpringBootApplication
 public class Application {
