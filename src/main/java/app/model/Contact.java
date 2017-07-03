@@ -16,6 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name = "contacts")
 public class Contact extends DomainBase {
@@ -67,7 +72,7 @@ public class Contact extends DomainBase {
     this.last_name = last_name;
   }
   
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(name = "contact_phone", joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "phone_id", referencedColumnName = "id"))
 	public List<Phone> getPhones() {
 		return phones;
@@ -83,6 +88,9 @@ public class Contact extends DomainBase {
 
 	@ManyToOne
     @JoinColumn(name = "user_id")
+	@JsonProperty(value = "user_id")
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+	@JsonIdentityReference(alwaysAsId = true) 
 	public User getUser() {
 		return user;
 	}

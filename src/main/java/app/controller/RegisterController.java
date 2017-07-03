@@ -22,10 +22,10 @@ public class RegisterController {
 	UserRepository repository;
 	
 	@RequestMapping(method = RequestMethod.POST)
-	  public ResponseEntity authenticationRequest(@RequestBody RegisterRequest user){
+	  public ResponseEntity<?> authenticationRequest(@RequestBody RegisterRequest user){
 		User user2 = new User(user.getUsername(), encoder.encode(user.getPassword()), user.getUsername(), null, "USER");
 		repository.save(user2);
-	    // Return the token
-	    return new ResponseEntity(HttpStatus.OK);
+		return ResponseEntity.ok("");
+//	    return new ResponseEntity(HttpStatus.OK);
 	  }
 }

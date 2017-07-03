@@ -98,7 +98,7 @@ public class User extends DomainBase {
     this.authorities = authorities;
   }
 
-  	@OneToMany(cascade = CascadeType.ALL, mappedBy ="user")
+  	@OneToMany(cascade = CascadeType.ALL, mappedBy ="user", orphanRemoval = true)
 	public List<Contact> getContacts() {
 		return contacts;
 	}
