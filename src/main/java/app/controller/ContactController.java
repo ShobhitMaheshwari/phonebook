@@ -3,6 +3,9 @@ package app.controller;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,27 +83,30 @@ public class ContactController {
 	  return new ResponseEntity<>(new ContactResponse(contacts_id), HttpStatus.OK);
   }
   
-  @PreAuthorize("hasAuthority('USER')")
-  @RequestMapping(path="/{contacts_id}", method = RequestMethod.DELETE)
-  public ResponseEntity<?> DeleteContact(@PathVariable(value="contacts_id") Long contacts_id) {
-	  CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      User user2 = repository.findOne(user.getId());
+	@PreAuthorize("hasAuthority('USER')")
+	@RequestMapping(path="/{contacts_id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> DeleteContact(@PathVariable(value="contacts_id") Long contacts_id) {
+		CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user2 = repository.findOne(user.getId());
       
-      Contact contact = contactRepository.findOne(contacts_id);
-      if(contact.getUser().getId().equals(user2.getId())) {
-    	  List<Phone> phones = contact.getPhones();
-    	  contactRepository.delete(contacts_id);
-    	  //This does not work currently. 
-    	  //The idea is that if each of these phone numbers is not referenced in contact_phone table, 
-    	  //then this phone number must be deleted. As it currently stands, the phone number is not deleted, 
-    	  //but contact and entries from contact_phone table will be deleted.    
-//    	  for(Phone phone: phones) {
-//    		  phoneRepository.customDelete(phone.getId());
-//    	  }
-    	  
-      }
-	  return ResponseEntity.ok("{}");
-  }
+		Contact contact = contactRepository.findOne(contacts_id);
+		if(contact.getUser().getId().equals(user2.getId())) {
+			temp(contact);
+			contactRepository.delete(contacts_id);
+			List<Phone> phones = contact.getPhones();
+			for(Phone phone: phones) {
+				phone = phoneRepository.findOne(phone.getId());
+				if(phone.getContacts().size() == 0) {
+					phoneRepository.delete(phone.getId());
+				}
+			}
+		}
+		return ResponseEntity.ok("{}");
+	}
+	@Transactional
+	public void temp(Contact contact) {
+		Hibernate.initialize(contact.getPhones());
+	}
   
   @PreAuthorize("hasAuthority('USER')")
   @RequestMapping(path="/{contacts_id}/entries", method = RequestMethod.POST)

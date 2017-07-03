@@ -21,7 +21,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"username":"shobhit","p
 # login
 curl -i -H "Content-Type: application/json" -X POST -d '{"username":"shobhit","password":"shobhit"}' http://localhost:8080/user
 
-
 The following services need the user to send the token in X-Auth-Token header field
 
 # List all contacts
