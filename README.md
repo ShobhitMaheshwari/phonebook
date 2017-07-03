@@ -1,6 +1,17 @@
 # phonebook
 
-spring security heavily borrowed from https://github.com/brahalla/Cerberus
+spring security borrowed from https://github.com/brahalla/Cerberus
+
+Uses mysql database, with table name boot_security
+
+#test
+mvn test
+
+#package
+mvn clean package
+
+#run
+mvn spring-boot:run
 
 #register
 curl -i -H "Content-Type: application/json" -X POST -d '{"username":"shobhit","password":"shobhit"}' http://localhost:8080/register
@@ -22,12 +33,3 @@ curl -i -H "Content-Type: application/json" -H "X-Auth-Token: " -X POST -d '{"ph
 
 #Delete contact
 curl -i -H "Content-Type: application/json" -H "X-Auth-Token: " -X DELETE http://localhost:8080/contacts/1
-
-#test
-mvn test
-
-#package
-mvn clean package
-
-#run
-mvn spring-boot:run

@@ -25,7 +25,7 @@ public class RegisterController {
 	  public ResponseEntity<?> authenticationRequest(@RequestBody RegisterRequest user){
 		User user2 = new User(user.getUsername(), encoder.encode(user.getPassword()), user.getUsername(), null, "USER");
 		repository.save(user2);
-		return ResponseEntity.ok("");
-//	    return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity(HttpStatus.CREATED);
+		//return ResponseEntity.ok("");
 	  }
 }

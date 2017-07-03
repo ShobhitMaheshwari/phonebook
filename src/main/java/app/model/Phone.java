@@ -12,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "phones")
 public class Phone extends DomainBase {
@@ -33,6 +35,7 @@ public class Phone extends DomainBase {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "users_seq")
 	@SequenceGenerator(name = "users_seq", sequenceName = "users_seq", allocationSize = 1)
+  @JsonIgnore
   public Long getId() {
     return this.id;
   }
@@ -51,11 +54,17 @@ public class Phone extends DomainBase {
 	}
 
 	@ManyToMany(mappedBy = "phones")
+	@JsonIgnore
 	public List<Contact> getContacts() {
 		return contacts;
 	}
 	
 	public void setContacts(List<Contact> contacts) {
 		this.contacts = contacts;
+	}
+	
+	@Override
+	public String toString() {
+		return "\"" + this.number + "\"";
 	}
 }

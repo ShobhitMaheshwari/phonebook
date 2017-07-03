@@ -18,8 +18,13 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.RawSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Entity
 @Table(name = "contacts")
@@ -55,6 +60,7 @@ public class Contact extends DomainBase {
   }
 
   @Column(name = "first_name")
+  @JsonProperty(value = "first_name")
   public String getFirstName() {
     return this.first_name;
   }
@@ -64,6 +70,7 @@ public class Contact extends DomainBase {
   }
 
   @Column(name = "last_name")
+  @JsonProperty(value = "last_name")
   public String getLastName() {
     return this.last_name;
   }
@@ -73,7 +80,17 @@ public class Contact extends DomainBase {
   }
   
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(name = "contact_phone", joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "phone_id", referencedColumnName = "id"))
+  @JoinTable(
+		  name = "contact_phone", 
+		  joinColumns = @JoinColumn(
+				  name = "contact_id", 
+				  referencedColumnName = "id"), 
+		  inverseJoinColumns = @JoinColumn(
+				  name = "phone_id", 
+				  referencedColumnName = "id")
+		  )
+//  	@JsonSerialize(using = RawSerializer<Phone>.class)
+  	@JsonRawValue
 	public List<Phone> getPhones() {
 		return phones;
 	}
@@ -90,7 +107,8 @@ public class Contact extends DomainBase {
     @JoinColumn(name = "user_id")
 	@JsonProperty(value = "user_id")
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-	@JsonIdentityReference(alwaysAsId = true) 
+	@JsonIdentityReference(alwaysAsId = true)
+	@JsonIgnore
 	public User getUser() {
 		return user;
 	}

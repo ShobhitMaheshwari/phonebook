@@ -22,6 +22,7 @@ import app.model.Contact;
 import app.model.Phone;
 import app.model.User;
 import app.repository.ContactRepository;
+import app.repository.PhoneRepository;
 import app.repository.UserRepository;
 import app.request.ContactRequest;
 import app.request.PhoneRequest;
@@ -37,11 +38,13 @@ public class ContactController {
 	@Autowired
 	private ContactRepository contactRepository;
 	
+	@Autowired
+	private PhoneRepository phoneRepository;
+	
 	private static final Logger log = LoggerFactory.getLogger(ContactController.class);
 
   @RequestMapping(method = RequestMethod.GET)
   @PreAuthorize("hasAuthority('USER')")
-//  @PreAuthorize("@securityService.hasProtectedAccess()")
   public ResponseEntity<?> getContacts() {
 	  CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
       User user2 = repository.findOne(user.getId());
@@ -66,15 +69,13 @@ public class ContactController {
   public ResponseEntity<?> UpdateContact(@PathVariable(value="contacts_id") Long contacts_id, @RequestBody ContactRequest contactrequest) {
 	  CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
       User user2 = repository.findOne(user.getId());
-      List<Contact> contacts = user2.getContacts();
       
-      for(Contact contact: contacts) {
-    	  if(contact.getId().equals(contacts_id)) {
-    		  contact.setFirstName(contactrequest.getFirst_name());
-    		  contact.setLastName(contactrequest.getLast_name());
-    	  }
+      Contact contact = contactRepository.findOne(contacts_id);
+      if(contact.getUser().getId().equals(user2.getId())) {
+    	  contact.setFirstName(contactrequest.getFirst_name());
+		  contact.setLastName(contactrequest.getLast_name());
       }
-      repository.save(user2);
+      contactRepository.save(contact);
       
 	  return new ResponseEntity<>(new ContactResponse(contacts_id), HttpStatus.OK);
   }
@@ -84,14 +85,20 @@ public class ContactController {
   public ResponseEntity<?> DeleteContact(@PathVariable(value="contacts_id") Long contacts_id) {
 	  CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
       User user2 = repository.findOne(user.getId());
-      List<Contact> contacts = user2.getContacts();
-      for (Iterator<Contact> iter = contacts.listIterator(); iter.hasNext(); ) {
-    	    Contact contact = iter.next();
-    	    if (contact.getId().equals(contacts_id)) {
-    	    	iter.remove();
-    	    }
-    	}
-      repository.save(user2);
+      
+      Contact contact = contactRepository.findOne(contacts_id);
+      if(contact.getUser().getId().equals(user2.getId())) {
+    	  List<Phone> phones = contact.getPhones();
+    	  contactRepository.delete(contacts_id);
+    	  //This does not work currently. 
+    	  //The idea is that if each of these phone numbers is not referenced in contact_phone table, 
+    	  //then this phone number must be deleted. As it currently stands, the phone number is not deleted, 
+    	  //but contact and entries from contact_phone table will be deleted.    
+//    	  for(Phone phone: phones) {
+//    		  phoneRepository.customDelete(phone.getId());
+//    	  }
+    	  
+      }
 	  return ResponseEntity.ok("{}");
   }
   
@@ -100,15 +107,11 @@ public class ContactController {
   public ResponseEntity<?> UpdatePhone(@PathVariable(value="contacts_id") Long contacts_id, @RequestBody PhoneRequest phoneRequest) {
 	  CerberusUser user = (CerberusUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
       User user2 = repository.findOne(user.getId());
-      List<Contact> contacts = user2.getContacts();
-      for(Contact contact: contacts) {
-    	  if(contact.getId().equals(contacts_id)) {
-    		  Contact contact2 = contactRepository.findOne(contacts_id);
-    		  contact2.addPhones(new Phone(phoneRequest.getPhone()));
-    		  contactRepository.save(contact2);
-    	  }
+      Contact contact = contactRepository.findOne(contacts_id);
+      if(contact.getUser().getId().equals(user2.getId())) {
+    	  contact.addPhones(new Phone(phoneRequest.getPhone()));
+		  contactRepository.save(contact);
       }
-      //repository.save(user2);
       return new ResponseEntity<>(new ContactResponse(contacts_id), HttpStatus.CREATED);
   }
   
