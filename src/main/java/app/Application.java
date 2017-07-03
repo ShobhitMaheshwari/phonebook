@@ -6,14 +6,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
-//https://spring.io/guides/gs/accessing-data-jpa/
-//https://spring.io/guides/gs/rest-service/
 
 import app.model.User;
 import app.repository.UserRepository;
 
 @SpringBootApplication
+@PropertySource(value={"classpath:application-local.properties"})
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);

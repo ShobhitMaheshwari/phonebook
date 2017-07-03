@@ -1,12 +1,16 @@
 package app.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -23,6 +27,7 @@ public class User extends DomainBase {
   private String email;
   private Date lastPasswordReset;
   private String authorities;
+  private List<Contact> contacts=new ArrayList<Contact>();
 
   public User() {
     super();
@@ -93,4 +98,16 @@ public class User extends DomainBase {
     this.authorities = authorities;
   }
 
+  	@OneToMany(cascade = CascadeType.ALL, mappedBy ="user")
+	public List<Contact> getContacts() {
+		return contacts;
+	}
+  	
+  	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
+	}
+
+	public void addContact(Contact contact) {
+		this.contacts.add(contact);
+	}
 }
